@@ -6,13 +6,39 @@ import (
 	"net/http"
 )
 
+type TellerAccountType = string
+
+const (
+	TellerAccountTypeDepository TellerAccountType = "depository"
+	TellerAccountTypeCredit     TellerAccountType = "credit"
+)
+
+type TellerAccountSubtype = string
+
+const (
+	TellerAccountSubtypeChecking             TellerAccountSubtype = "checking"
+	TellerAccountSubtypeSavings              TellerAccountSubtype = "savings"
+	TellerAccountSubtypeMoneyMarket          TellerAccountSubtype = "money_market"
+	TellerAccountSubtypeCertificateOfDeposit TellerAccountSubtype = "certificate_of_deposit"
+	TellerAccountSubtypeTreasury             TellerAccountSubtype = "treasury"
+	TellerAccountSubtypeCreditCard           TellerAccountSubtype = "credit_card"
+	TellerAccountSubtypeSweep                TellerAccountSubtype = "sweep"
+)
+
+type TellerAccountStatusType = string
+
+const (
+	TellerAccountStatusTypeOpen   TellerAccountStatusType = "open"
+	TellerAccountStatusTypeClosed TellerAccountStatusType = "closed"
+)
+
 // TellerAccount represents a bank account
 type TellerAccount struct {
-	Currency     string `json:"currency"`
-	EnrollmentID string `json:"enrollment_id"`
-	ID           string `json:"id"`
-	Name         string `json:"name"`
-	Type         string `json:"type"` // "depository" or "credit"
+	Currency     string            `json:"currency"`
+	EnrollmentID string            `json:"enrollment_id"`
+	ID           string            `json:"id"`
+	Name         string            `json:"name"`
+	Type         TellerAccountType `json:"type"` // "depository" or "credit"
 	Institution  struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
@@ -24,8 +50,8 @@ type TellerAccount struct {
 		Balances     string `json:"balances"`
 		Transactions string `json:"transactions"`
 	} `json:"links"`
-	Subtype string `json:"subtype"` // "checking", "savings", etc.
-	Status  string `json:"status"`  // "open" or "closed"
+	Subtype TellerAccountSubtype    `json:"subtype"` // "checking", "savings", etc.
+	Status  TellerAccountStatusType `json:"status"`  // "open" or "closed"
 }
 
 // TellerAccountDetails represents detailed account information

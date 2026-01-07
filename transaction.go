@@ -8,6 +8,27 @@ import (
 	"strconv"
 )
 
+type TellerTransactionProcessingType = string
+
+const (
+	TellerTransactionProcessingTypePending  TellerTransactionProcessingType = "pending"
+	TellerTransactionProcessingTypeComplete TellerTransactionProcessingType = "complete"
+)
+
+type TellerTransactionCounterPartyType = string
+
+const (
+	TellerTransactionCounterPartyTypePerson       TellerTransactionCounterPartyType = "person"
+	TellerTransactionCounterPartyTypeOrganization TellerTransactionCounterPartyType = "organization"
+)
+
+type TellerTransactionStatusType = string
+
+const (
+	TellerTransactionStatusTypePosted  TellerTransactionStatusType = "posted"
+	TellerTransactionStatusTypePending TellerTransactionStatusType = "pending"
+)
+
 // TellerTransaction represents a financial transaction
 type TellerTransaction struct {
 	AccountID   string `json:"account_id"`
@@ -15,15 +36,15 @@ type TellerTransaction struct {
 	Date        string `json:"date"`
 	Description string `json:"description"`
 	Details     struct {
-		ProcessingStatus string `json:"processing_status"` // "pending" or "complete"
-		Category         string `json:"category"`
+		ProcessingStatus TellerTransactionProcessingType `json:"processing_status"` // "pending" or "complete"
+		Category         string                          `json:"category"`
 		Counterparty     struct {
-			Name *string `json:"name"`
-			Type string  `json:"type"` // "person" or "organization"
+			Name *string                           `json:"name"`
+			Type TellerTransactionCounterPartyType `json:"type"` // "person" or "organization"
 		} `json:"counterparty"`
 	} `json:"details"`
-	Status string `json:"status"` // "posted" or "pending"
-	ID     string `json:"id"`
+	Status TellerTransactionStatusType `json:"status"` // "posted" or "pending"
+	ID     string                      `json:"id"`
 	Links  struct {
 		Self    string `json:"self"`
 		Account string `json:"account"`
