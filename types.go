@@ -8,6 +8,8 @@ type TellerOptionsBase struct {
 // TellerOptionsPagination represents pagination options for Teller API requests
 type TellerOptionsPagination struct {
 	TellerOptionsBase
-	Cursor string
-	Limit  int
+	Cursor    *string
+	Limit     *int
+	StartDate *string
+	EndDate   *string
 }

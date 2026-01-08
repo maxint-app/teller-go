@@ -63,15 +63,23 @@ func (m *TransactionModule) List(accountID string, options *TellerOptionsPaginat
 	endpoint := fmt.Sprintf("%s/accounts/%s/transactions", m.client.baseURL, accountID)
 
 	// Add pagination parameters if provided
-	if options != nil && (options.Cursor != "" || options.Limit > 0) {
+	if options != nil {
 		params := url.Values{}
-		if options.Cursor != "" {
-			params.Set("from_id", options.Cursor)
+		if options.Cursor != nil {
+			params.Set("from_id", *options.Cursor)
 		}
-		if options.Limit > 0 {
-			params.Set("count", strconv.Itoa(options.Limit))
+		if options.Limit != nil && *options.Limit > 0 {
+			params.Set("count", strconv.Itoa(*options.Limit))
 		}
-		endpoint += "?" + params.Encode()
+		if options.StartDate != nil {
+			params.Set("start_date", *options.StartDate)
+		}
+		if options.EndDate != nil {
+			params.Set("end_date", *options.EndDate)
+		}
+		if len(params) > 0 {
+			endpoint += "?" + params.Encode()
+		}
 	}
 
 	req, err := http.NewRequest("GET", endpoint, nil)
@@ -100,7 +108,7 @@ func (m *TransactionModule) List(accountID string, options *TellerOptionsPaginat
 }
 
 // Get retrieves a single transaction
-func (m *TransactionModule) Get(accountID string, id string, options *TellerOptionsPagination) (*TellerTransaction, error) {
+func (m *TransactionModule) Get(accountID string, id string, options *TellerOptionsBase) (*TellerTransaction, error) {
 	endpoint := fmt.Sprintf("%s/accounts/%s/transactions/%s", m.client.baseURL, accountID, id)
 
 	req, err := http.NewRequest("GET", endpoint, nil)
