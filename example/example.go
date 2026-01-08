@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/maxint-app/teller-go"
@@ -29,6 +31,53 @@ func main() {
 		fmt.Printf("Institution: %s (ID: %s)\n", institution.Name, institution.ID)
 		fmt.Println("Products:", strings.Join(institution.Products, ", "))
 	}
+
+	accounts, err := client.Account.List(&teller.TellerOptionsBase{
+		AccessToken: os.Getenv("TELLER_ACCESS_TOKEN"),
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, account := range accounts {
+		jsonMarshal, _ := json.MarshalIndent(account, "", "  ")
+		fmt.Printf("Account: %s\n", jsonMarshal)
+	}
+
+	transactions, err := client.Transactions.List("acc_12345678894020", &teller.TellerOptionsPagination{
+		TellerOptionsBase: teller.TellerOptionsBase{
+			AccessToken: os.Getenv("TELLER_ACCESS_TOKEN"),
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, transaction := range transactions {
+		jsonMarshal, _ := json.MarshalIndent(transaction, "", "  ")
+		fmt.Printf("Transaction: %s\n", jsonMarshal)
+	}
+
+	transaction, err := client.Transactions.Get("acc_12345678894020", "txn_123456578899", &teller.TellerOptionsBase{
+		AccessToken: os.Getenv("TELLER_ACCESS_TOKEN"),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jsonMarshal, _ := json.MarshalIndent(transaction, "", "  ")
+	fmt.Printf("Transaction: %s\n", jsonMarshal)
+
+	identity, err := client.Identity.Get(&teller.TellerOptionsBase{
+		AccessToken: os.Getenv("TELLER_ACCESS_TOKEN"),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jsonMarshal, _ = json.MarshalIndent(identity, "", "  ")
+	log.Printf("Identity: %s\n", jsonMarshal)
 
 	RunWebhookServer()
 }

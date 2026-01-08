@@ -87,7 +87,7 @@ type AccountModule struct {
 
 // List retrieves all accounts
 func (m *AccountModule) List(options *TellerOptionsBase) ([]TellerAccount, error) {
-	req, err := http.NewRequest("GET", m.client.baseURL+"/account", nil)
+	req, err := http.NewRequest("GET", m.client.baseURL+"/accounts", nil)
 	if err != nil {
 		return nil, err
 	}
